@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    <link rel='stylesheet' href='/libraries/DataTables/css/dataTables.bootstrap4.min.css' />
+  </head>
+  <body>
+    <div class="row col-12">
+      <h2 class="col-9 ml-0 pl-0"><%= title %></h2>
+      <a href="/login" class="col-3 text-right">Administrator? Login Now</a>
+    </div>
+    <p>Search for Github Repository</p>
+    <div class="row form-group">
+      <label class="col-3">Topic</label>
+      <input class="col-3 form-control" type="text" id="topic" name="topic">
+    </div>
+    <div class="row form-group">
+      <label class="col-3">Language</label>
+      <input class="col-3 form-control" type="text" id="language" name="language">
+    </div>
+    <button type="submit" class="btn btn-primary">
+      Search
+    </button>
+    <div class="col-sm-12 mt-2">
+      <table id="table_id" class="table table-striped w-100">
+          <thead>
+              <tr>
+                  <th class="width-20">Full Name</th>
+                  <th class="width-60">URL</th>
+                  <th class="width-10">Language</th>
+              </tr>
+          </thead>
+       </table>
+    </div>
+  </body>
+
+  <script type="text/javascript" src="/javascripts/jquery-1.12.4.min.js"></script>
+  <script type="text/javascript" src="/libraries/DataTables/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="/libraries/DataTables/js/dataTables.bootstrap4.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready( function () {
+      let table = $('#table_id').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/api/search',
+            dataType: 'json',
+            type: 'POST',
+            dataSrc: "data",
+            data: function (d) {
+              d.topic = $('#topic').val();
+              d.language = $('#language').val();
+            }
+        },
+        columns: [
+            { data: 'full_name'},
+            { data: 'html_url', 
+                fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                  let url = '<a href="' + sData + '">'+sData+'</a>';
+                  $(nTd).html(url);
+                }
+            },
+            { data: 'language'},
+        ],
+        columnDefs: [
+            { className: "width-20", "targets": [ 0 ] },
+            { className: "width-60", "targets": [ 1 ] },
+            { className: "width-10", "targets": [ 2 ] },
+        ],
+        bLengthChange: false,
+        pageLength: 20,
+        searching: false,
+      });
+      $('button').on('click', function() {
+        table.ajax.reload();
+      });
+    });
+  </script>
+</html>

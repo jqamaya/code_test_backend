@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+  </head>
+  <body>
+    <div class="col-sm-4 col-12 mx-auto">
+      <h2 class="text-center"><%= title %></h2>
+      <!-- <h4 id="errorMessage"></h4> -->
+      <form method="POST" action="/admin_login">
+        <div class="col-12 mx-auto px-0 form-group mt-3">
+            <input class="form-control" type="text" id="username" name="username" placeholder="Username">
+            <input class="form-control mt-2" type="password" id="password" name="password" placeholder="Password">
+            <button type="submit" id="login" class="btn btn-primary col-12 mt-3">Login</button>
+          </div>
+        </form>
+    </div>
+  </body>
+
+  <script type="text/javascript" src="/javascripts/jquery-1.12.4.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready( function () {
+      // $('#login').on('click', function() {
+      //   $.ajax({
+      //     type: 'POST',
+      //     url: "/api/login",
+      //     dataType: 'json',
+      //     data: {
+      //         "rewardID": rewardID,
+      //         "points": points,
+      //         "quantity": quantity,
+      //     },
+      //     success: function(result) {
+      //         if (!result.status) {
+      //             success = false;
+      //             modalLabel = 'Add to cart failed.';
+      //         }
+      //         showModal(success, modalLabel);
+      //         if(result.status) displayCartCount();
+      //     },
+      //     error: function(error) {
+      //         console.error(error);
+      //     }
+      //   });
+      // })
+    });
+  </script>
+</html>

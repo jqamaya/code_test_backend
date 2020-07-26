@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search Results</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    <link rel='stylesheet' href='/libraries/DataTables/css/dataTables.bootstrap4.min.css' />
+  </head>
+  <body>
+    <div class="row col-12">
+      <a href="/admin/search_results" class="col-1 pl-0 align-self-center">Back</a>
+    </div>
+    <div class="row col-12 mt-2">
+      <h2 class="col-9 ml-0 pl-0">Search Result</h2>
+      <a href="/admin_logout" class="col-3 text-right align-self-center">Logout</a>
+    </div>
+    <div class="row">
+      <label class="col-sm-2 col-xs-12"><strong>Topic:</strong></label>
+      <p class="col-sm-10 col-xs-12"><%= result ? result.topic : '-' %></p>
+    </div>
+    <div class="row">
+      <label class="col-sm-2 col-xs-12"><strong>Language:</strong></label>
+      <p class="col-sm-10 col-xs-12"><%= result ? result.language : '-' %></p>
+    </div>
+    <div class="col-sm-12">
+      <div class="row">
+        <label><strong>Response:</strong></label>
+      </div>
+      <pre id="result"><%= JSON.stringify(result.result, null, 2) %></pre>
+    </div>
+  </body>
+
+  <script type="text/javascript" src="/javascripts/jquery-1.12.4.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready( function () {
+      // $('#result').textContent = $('#result').val();
+    });
+  </script>
+</html>
