@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-let LoginController = require('../controllers/LoginController');
-let SearchResultController = require('../controllers/SearchResultController');
-let auth = require('../middleware/auth');
+let LoginController = require('../src/controllers/LoginController');
+let SearchResultController = require('../src/controllers/SearchResultController');
+let auth = require('../src/middleware/auth');
 
 /**
  * Home page

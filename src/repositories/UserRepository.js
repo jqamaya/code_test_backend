@@ -1,4 +1,4 @@
-let User = require('../db/models').users;
+let User = require('../../db/models').users;
 const { Op } = require("sequelize");
 
 /**

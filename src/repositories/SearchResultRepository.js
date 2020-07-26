@@ -1,15 +1,19 @@
-let SearchResult = require('../db/models').search_results;
+let SearchResult = require('../../db/models').search_results;
 
 /**
  * Save search results
  */
 exports.saveResult = async function(searchResult) {
-    const result = await SearchResult.create({
-        topic: searchResult.topic,
-        language:searchResult.language,
-        result: searchResult.result
-    });
-    return result;
+    try {
+        const result = await SearchResult.create({
+            topic: searchResult.topic,
+            language:searchResult.language,
+            result: searchResult.result
+        });
+        return result !== null ? true : false;
+    } catch(err) {
+        return false;
+    }
 }
 
 /**
