@@ -1,4 +1,3 @@
-const request = require('supertest');
 const SearchResultRepository = require('../src/repositories/SearchResultRepository');
 
 describe('Save Search Result', () => {

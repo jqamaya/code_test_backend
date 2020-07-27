@@ -124,11 +124,9 @@ exports.getResults = async function(req, res) {
 exports.getResultDetails = async function(req, res) {
     try {
         const result = await SearchResultRepository.getResultDetails(req.params.id);
-        res.render('admin_result', { result: result });
-        res.end();
+        return res.render('admin_result', { result: result });
     } catch (error) {
         console.log(error);
-        res.render('admin_result', { result: null });
-        res.end();
+        return res.render('admin_result', { result: null });
     }
 }
