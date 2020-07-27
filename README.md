@@ -1,7 +1,7 @@
 ## Setup
 
 1. Make sure NodeJS and MySQL are installed in your PC.
-2. Add `.env` file with the following variables:
+2. Create a new `.env` file under the project folder with the following variables:
    1. NODE_ENV=development
    2. DB_HOST=localhost
    3. DB_PORT=your_db_port
