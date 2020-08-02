@@ -48,7 +48,6 @@
           { data: 'language' },
           { data: 'result',
             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-              console.log('oData', oData);
               const result = JSON.stringify(sData);
               const truncate = result.length > 100 ? `${result.substring(0, 100)}...` : result;
               let url = '<a href="/admin/search_results/'+oData.id+'"><pre>'+truncate+'</pre></a>'

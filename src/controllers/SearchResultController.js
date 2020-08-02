@@ -14,70 +14,81 @@ exports.search = async function(req, res) {
     let limit = request.length ? request.length : 20;
     let page = (request.start / limit) + 1;
 
-    // Github API URL
-    let url = 'https://api.github.com/search/repositories';
-    // if topic and language are empty, return empty result
     if (!topic && !language) {
-        return res.json({
-            'draw': request.draw,
-            'recordsTotal': 0,
-            'recordsFiltered': 0,
-            'data': [],
-            'error': '',
-        });
+        return buildResponse(request, res);
     }
 
-    // create query
     let keyword = '';
-    // if topic is not empty, add topic to keyword
+    let connector = '';
     if (topic) {
-        keyword = 'topic:' + topic + '+';
+        keyword = 'topic:' + topic;
+        connector = '+';
     }
-    // if language is not empty, add language to keyword
     if (language) {
-        keyword += 'language:' + language;
+        keyword += connector + 'language:' + language;
     }
 
-    url += '?q=' + keyword + '&page=' + page + '&per_page=' + limit;
-    console.log(url);
-    // call Github API
-    return axios.get(url)
+    let url = 'https://api.github.com/search/repositories?q=' + keyword;
+    return axios.get(url, {
+            params: {
+                page: page,
+                per_page: limit
+            }
+        })
         .then(response => {
-            // save search result to DB
             const result = SearchResultRepository.saveResult({
                 topic,
                 language,
                 result: response.data
             });
-            return res.json({
-                'draw': request.draw,
-                'recordsTotal': response.data.total_count,
-                'recordsFiltered': response.data.total_count,
-                'data': response.data.items,
-                'error': '',
-            });
+            return buildResponse(request, res, response.data);
         })
         .catch(error => {
-            console.log(error);
-            let errorMessage = error.message;
-            // if response exists, get the message from the response data
-            if (error.response && error.response.data) {
-                errorMessage = error.response.data.message;
-            }
-            // save the error message to DB
+            let errorMessage = getErrorMessage(error);
             const result = SearchResultRepository.saveResult({
                 topic,
                 language,
                 result: error.response ? error.response.data : errorMessage
             });
-            return res.json({
-                'draw': request.draw,
-                'recordsTotal': 0,
-                'recordsFiltered': 0,
-                'data': [],
-                'error': errorMessage,
-            });
+            return buildResponse(request, res, null, errorMessage);
         });
+}
+
+/**
+ * Get the error message from the exception
+ * 
+ * @param {*} error 
+ */
+const getErrorMessage = function (error) {
+    let errorMessage = error.message;
+    if (error.response && error.response.data) {
+        errorMessage = error.response.data.message;
+    }
+    return errorMessage;
+}
+
+/**
+ * Build JSON response for datatables
+ * 
+ * @param {*} request 
+ * @param {*} res 
+ * @param {*} data 
+ * @param {string} error error message 
+ */
+const buildResponse = function(request, res, data = null, error = null) {
+    let total = 0;
+    let results = [];
+    if (data) {
+        total = data.total_count ? data.total_count : data.length
+        results = data.items ? data.items : data;
+    }
+    return res.json({
+        'draw': request.draw,
+        'recordsTotal': total,
+        'recordsFiltered': total,
+        'data': results,
+        'error': error ? error : '',
+    });
 }
 
 /**
@@ -89,29 +100,11 @@ exports.search = async function(req, res) {
 exports.getResults = async function(req, res) {
     let request = req.body;
     try {
-        // get the search results from the database
         const results = await SearchResultRepository.getResults(req);
-        return res.json({
-            'draw': request.draw,
-            'recordsTotal': results.length,
-            'recordsFiltered': results.length,
-            'data': results,
-            'error': '',
-        });
+        return buildResponse(request, res, results);
     } catch (error) {
-        console.log(error);
-        let errorMessage = error.message;
-        // if response exists, get the message from the response data
-        if (error.response && error.response.data) {
-            errorMessage = error.response.data.message;
-        }
-        return res.json({
-            'draw': request.draw,
-            'recordsTotal': 0,
-            'recordsFiltered': 0,
-            'data': [],
-            'error': errorMessage,
-        });
+        let errorMessage = getErrorMessage(error);
+        return buildResponse(request, res, null, errorMessage);
     }
 }
 
@@ -126,7 +119,6 @@ exports.getResultDetails = async function(req, res) {
         const result = await SearchResultRepository.getResultDetails(req.params.id);
         return res.render('admin_result', { result: result });
     } catch (error) {
-        console.log(error);
         return res.render('admin_result', { result: null });
     }
 }
