@@ -26,7 +26,16 @@ module.exports = {
         type: Sequelize.STRING(255)
       },
       password: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING,
+        get() {
+          return() => this.getDataValue('password')
+        }
+      },
+      salt: {
+        type: Sequelize.STRING,
+        get() {
+          return() => this.getDataValue('salt')
+        }
       },
       is_admin: {
         type: Sequelize.BOOLEAN
